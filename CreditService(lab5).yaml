@@ -1,0 +1,566 @@
+openapi: 3.0.0
+info:
+  title: Credit service
+  version: 1.0.0
+  description: lab#5 pp (V-4)
+  
+host: "onlineshop.swagger.io"
+ 
+tags:
+- name: client
+  description: client of the bank
+- name: credit
+  description: actions with credit
+- name: budget
+  description: current state of budget
+  
+  
+components:
+  schemas:
+    Client:
+      type: object
+      properties:
+        client_id:
+          type: integer
+          format: "int64" 
+          example: 1
+        first_name:
+          type: string
+          example: Victoria
+        surname:
+          type: string
+          example: Halik
+        email:
+          type: string
+          example: qwerty@gmail.com
+        password:
+          type: string
+          example: '*****'
+        age:
+          type: integer
+          format: "int64" 
+          minimum: 18
+          example: 18
+        credits:
+          type: array
+          items:
+            $ref: '#/components/schemas/Credit'
+      required: 
+        - client_id
+        - first_name
+        - surname
+        - password
+        - age
+    Credit:
+      type: object
+      properties:
+        sum_take:
+          type: integer
+          format: "int64"  
+          maximum: 517000
+          minimum: 1
+        sum_pay:
+          type: integer
+          format: "int64"        
+        period_month:
+          type: integer
+          format: "int64" 
+          minimum: 1
+        month_sum:
+          type: integer
+          format: "int64"
+        sum_paid:
+          type: integer
+          format: "int64"        
+        sum_left:
+          type: integer
+          format: "int64"
+        month_paid:
+          type: integer
+          format: "int64"
+        start_date:
+          format: date
+          pattern: "YYYY-MM-DD"
+        finish_date:
+          format: date
+          pattern: "YYYY-MM-DD"
+        percent:
+          type: integer
+          format: "int64"
+          minimum: 30
+          maximum: 30
+      required: 
+        - sum_take
+        - period_month
+    Budget:
+      type: object
+      properties:
+        is_empty:
+          type: boolean
+        available_sum:
+          type: integer
+          maximum: 517000
+          minimum: 0
+          format: "int64"
+      required:
+        - is_empty
+        - available_sum
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+        
+    
+paths:
+  /clients:
+    get:
+      tags:
+        - client
+      summary: 'List of clients'
+      responses:
+        '200':
+          description: 'successful'  
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Client'
+                example:
+                  [client_1, client_2, client_3]
+        '404':
+          description: 'there are no clients'
+      security:
+        - bearer: []   
+  /client:
+    post:
+      tags:
+      - client
+      summary: 'client registration'
+      operationId: register_client
+      parameters:
+      - name: username
+        in: query
+        description: the username
+        required: true
+        schema:
+          type: string
+      - name: password
+        in: query
+        description: the user password 
+        required: true
+        schema:
+          type: string
+      - name: first name
+        in: query
+        description: the user first name
+        required: true
+        schema:
+          type: string
+      - name: surname
+        in: query
+        description: the user surname
+        required: true
+        schema:
+          type: string
+      - name: email
+        in: query
+        description: the user's email
+        required: true
+        schema:
+          type: string
+      - name: age
+        in: query
+        description: the user`s age
+        required: true
+        schema:
+          type: integer
+          minimum: 18
+      responses:
+        '201':
+          description: 'client is registred'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+              example:
+               client_id: 1
+               first_name: Victoria
+               surname : Halik
+               email: victoriahall14@gmail.com
+               password: '*****'
+               age: 18
+               credits: []
+        '400':
+          description: invalid requestBody
+          
+  /client/login:
+    get:
+      tags:
+      - client
+      summary: log the client in
+      parameters:
+      - name: username
+        in: query
+        description: the user name for log in
+        required: true
+        schema:
+          type: string
+      - name: password
+        in: query
+        description: the password for log in
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: client is signed in
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Client'
+                example:
+                  [client_1, client_3]
+        '400':
+          description: invalid password or username
+        '404':
+          description: client doesnt exist
+  /client/logout:
+    get:
+      tags:
+      - client
+      summary: log the user out
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Client'
+                example:
+                  [client_1, client_3]
+      security:
+        - bearer: []
+  /client/{client_id}:
+    get:
+      tags:
+        - client
+      summary: 'get client`s info'
+      operationId: 'get clients info by id'
+      parameters:
+      - name: client_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+           description: 'success, show client`s info'
+           content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+              example:
+                client_id: 1
+                first_name: Victoria
+                surname : Halik
+                email: victoriahall14@gmail.com
+                password: '*****'
+                age: 18
+                credits: []
+        '400':
+           description: invalid username
+        '404':
+           description: client doesn't exist
+      security:
+        - bearer: []
+    delete:
+      tags:
+        - client
+      summary: delete the client
+      operationId: delete_client
+      parameters:
+      - name: client_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: "the client is deleted"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Client'
+                example:
+                  [client_1, client_3] 
+        '404':
+           description: client doesn't exist
+      security:
+        - bearer: []
+    put:
+      tags:
+        - client
+      summary: 'update client info'
+      operationId: update_client
+      parameters:
+      - name: client_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: username
+        in: query
+        description: the username
+        required: true
+        schema:
+          type: string
+      - name: password
+        in: query
+        description: the user password 
+        required: true
+        schema:
+          type: string
+      - name: first name
+        in: query
+        description: the user first name
+        required: true
+        schema:
+          type: string
+      - name: surname
+        in: query
+        description: the user surname
+        required: true
+        schema:
+          type: string
+      - name: email
+        in: query
+        description: the user's email
+        required: true
+        schema:
+          type: string
+      - name: age
+        in: query
+        description: the user`s age
+        required: true
+        schema:
+          type: integer
+          minimum: 18
+      responses:
+        '200':
+           description: "Client`s info updated"
+           content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'           
+              example:
+               client_id: 1
+               first_name: Victoria
+               surname : Halik
+               email: victoriahall14@gmail.com
+               password: '*****'
+               age: 18
+               credits: []           
+        "400":
+            description: "Invalid client supplied"
+        "404":
+            description: "Client not found"
+      security:
+        - bearer: []            
+  /client/{client_id}/credit:
+    get:
+      tags:
+       - credit
+      summary: 'get client`s credits'
+      operationId: show_credits
+      parameters:
+      - name: client_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: 'success, show client`s credit'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Credit'
+                example:
+                  amount_take: 100000
+                  amount_pay: 130000
+                  period_month: 10
+                  start_date: 2020-11-24
+                  finish_date: 2020-09-24
+                  month_sum: 13000
+                  sum_paid: 26000
+                  sum_left: 104000
+                  month_paid: 2
+                  percent: 30
+        '400':
+          description: 'invalid client_id'
+        '404':
+          description: "the client doesn`t have a credit"
+      security:
+        - bearer: []    
+    post:
+      tags:
+        - credit
+      summary: 'take credit'
+      description: 'it can be done only by registred client'
+      operationId: 'create the credit'
+      parameters:
+      - name: client_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: amount_take
+        in: query
+        description: 'sum of money to take'
+        required: true
+        schema:
+          type: integer
+          format: "int64" 
+          maximum: 51700
+          minimum: 1
+      - name: period_month
+        in: query
+        description: 'time to pay credit'
+        required: true
+        schema:
+          type: integer
+          format: "int64"
+          minimum: 1
+      responses:
+        '200':
+          description: 'credit is confirmed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        "400":
+          description: 'the credit cant be confirmed'
+        "404":
+          description: 'client doesnt exist'
+      security:
+        - bearer: []         
+    put:
+      tags:
+        - credit
+      summary: 'pay monthly sum'
+      operationId: 'pay_month'
+      parameters:
+      - name: client_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: "int64"
+      responses:
+        "200":
+            description: "the credit is succesfully and completely closed"
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Client'  
+        "404":
+          description: 'client or  doesn`t exist'
+      security:
+        - bearer: []          
+    delete:
+      tags:
+       - credit
+      summary: 'close credit'
+      operationId: "delete_credit"
+      parameters:
+      - name: client_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: "int64"
+      responses:
+        "200":
+            description: "the credit is succesfully and completely closed"
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Client'            
+        "400":
+          description: 'credit isnt completely paid'
+        "404":
+          description: 'credit doesn`t exist'
+      security:
+        - bearer: []        
+  /budget_state:
+    get:
+      tags:
+       - budget
+      summary: 'see state of budget'
+      operationId: budget_state_rendering 
+      responses:
+        "200":
+            description: "Budget info showed"
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Budget'  
+                example:
+                  is_empty: false
+                  available_sum: 517000
+        "404":
+            description: "no budget found"
+  /budget_update/{credit_id}:          
+    put:
+      tags:
+        - budget
+      summary: 'update budget info'
+      operationId: budget_fields_update
+      parameters:
+      - name: credit_id
+        in: body
+        required: true
+        schema:
+          $ref: '#/components/schemas/Credit'
+      responses:
+        "200":
+            description: "Budget info showed"
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Budget'  
+                example:
+                  is_empty: false
+                  available_sum: 517000
+        "404":
+            description: "no budget or credit found"     
+        "401":
+            description: "budget is up to date with this credit"   
+      security:
+        - bearer: []          
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
