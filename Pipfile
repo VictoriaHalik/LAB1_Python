@@ -1,4 +1,5 @@
 [[source]]
+<<<<<<< HEAD
 url = "https://pypi.org/simple"
 verify_ssl = true
 name = "pypi"
@@ -10,5 +11,17 @@ gunicorn = "*"
 
 [dev-packages]
 
+=======
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+flask = "*"
+gunicorn = "*"
+
+>>>>>>> main
 [requires]
 python_version = "3.8"
