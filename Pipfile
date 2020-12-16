@@ -1,4 +1,17 @@
 [[source]]
+<<<<<<< HEAD
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+sqlalchemy = "*"
+flask = "*"
+gunicorn = "*"
+
+[dev-packages]
+
+=======
 name = "pypi"
 url = "https://pypi.org/simple"
 verify_ssl = true
@@ -9,5 +22,6 @@ verify_ssl = true
 flask = "*"
 gunicorn = "*"
 
+>>>>>>> main
 [requires]
 python_version = "3.8"
