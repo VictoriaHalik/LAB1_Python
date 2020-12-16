@@ -11,7 +11,7 @@ CREATE TABLE credits(
     credit_id INTEGER PRIMARY KEY,
     sum_take INTEGER,
     sum_pay INTEGER,
-    period_month INTEGER,
+    pay_off BOOLEAN,
     month_sum INTEGER,
     sum_paid INTEGER,
     sum_left INTEGER,
@@ -20,11 +20,10 @@ CREATE TABLE credits(
     finish_date DATE,
     percent INTEGER,
     fk_client_id INTEGER,
-    FOREIGN KEY(fk_client_id) REFERENCES clients(client_id)
+    FOREIGN KEY(fk_client_id)  REFERENCES clients(client_id) ON DELETE CASCADE
 );
 
 CREATE TABLE budget(
-    id INTEGER PRIMARY KEY,
-    is_empty BOOLEAN,
+    is_empty BOOLEAN PRIMARY KEY,
     available_sum INTEGER
 );

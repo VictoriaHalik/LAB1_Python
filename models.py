@@ -3,13 +3,12 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy.orm.scoping import scoped_session
 
-engine = create_engine("postgresql://postgres:1q2w3e4r5t@localhost:5432/postgres")
+engine = create_engine("postgresql://postgres:123456@localhost:5433/postgres")
 
 sessionFactory = sessionmaker(bind=engine)
 session = scoped_session(sessionFactory)
 
 BaseModel = declarative_base()
-
 
 class Client(BaseModel):
     __tablename__ = "clients"
@@ -21,7 +20,7 @@ class Client(BaseModel):
     password = Column(String)
     age = Column(Integer)
 
-    credits = relationship('Credit', lazy='dynamic', backref='clients')
+    credits = relationship('Credit', lazy='dynamic', backref='clients' ,cascade="all, delete-orphan")
 
 
 class Credit(BaseModel):
@@ -30,7 +29,7 @@ class Credit(BaseModel):
     credit_id = Column(Integer, primary_key=True)
     sum_take = Column(Integer)
     sum_pay = Column(Integer)
-    period_month = Column(Integer)
+    pay_off = Column(Boolean)
     month_sum = Column(Integer)
     sum_paid = Column(Integer)
     sum_left = Column(Integer)
@@ -45,8 +44,7 @@ class Credit(BaseModel):
 class Budget(BaseModel):
     __tablename__ = "budget"
 
-    id = Column(Integer, primary_key=True)
-    is_empty = Column(Boolean)
+    is_empty = Column(Boolean, primary_key=True)
     available_sum = Column(Integer)
 
 
