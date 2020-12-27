@@ -3,7 +3,7 @@ from LABS_Application_Programming.models import *
 
 
 class ClientSchema(Schema):
-    client_id = fields.Int()
+    id = fields.Int()
     first_name = fields.Str()
     surname = fields.Str()
     email = fields.Str()
@@ -16,7 +16,7 @@ class ClientSchema(Schema):
 
 
 class CreditSchema(Schema):
-    credit_id = fields.Int()
+    id = fields.Int()
     sum_take = fields.Int()
     sum_pay = fields.Int()
     pay_off = fields.Bool()

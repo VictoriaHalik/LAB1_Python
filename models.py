@@ -3,7 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy.orm.scoping import scoped_session
 
-engine = create_engine("postgresql://postgres:123456@localhost:5433/postgres")
+engine = create_engine("postgresql+psycopg2://victoriapp:victoriapp@localhost/dbpp")
 
 sessionFactory = sessionmaker(bind=engine)
 session = scoped_session(sessionFactory)
@@ -13,7 +13,7 @@ BaseModel = declarative_base()
 class Client(BaseModel):
     __tablename__ = "clients"
 
-    client_id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     first_name = Column(String)
     surname = Column(String)
     email = Column(String)
@@ -26,7 +26,7 @@ class Client(BaseModel):
 class Credit(BaseModel):
     __tablename__ = "credits"
 
-    credit_id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     sum_take = Column(Integer)
     sum_pay = Column(Integer)
     pay_off = Column(Boolean)
@@ -38,7 +38,7 @@ class Credit(BaseModel):
     finish_date = Column(DATE)
     percent = Column(Integer)
 
-    fk_client_id = Column(Integer, ForeignKey("clients.client_id"))
+    fk_client_id = Column(Integer, ForeignKey("clients.id"))
 
 
 class Budget(BaseModel):

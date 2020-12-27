@@ -3,9 +3,9 @@ info:
   title: Credit service
   version: 1.0.0
   description: lab#5 pp (V-4)
-  
+
 host: "onlineshop.swagger.io"
- 
+
 tags:
 - name: client
   description: client of the bank
@@ -14,7 +14,7 @@ tags:
 - name: budget
   description: current state of budget
   
-  
+
 components:
   schemas:
     Client:
@@ -22,7 +22,7 @@ components:
       properties:
         client_id:
           type: integer
-          format: "int64" 
+          format: "int64"
           example: 1
         first_name:
           type: string
@@ -38,14 +38,14 @@ components:
           example: '*****'
         age:
           type: integer
-          format: "int64" 
+          format: "int64"
           minimum: 18
           example: 18
         credits:
           type: array
           items:
             $ref: '#/components/schemas/Credit'
-      required: 
+      required:
         - client_id
         - first_name
         - surname
@@ -56,22 +56,22 @@ components:
       properties:
         sum_take:
           type: integer
-          format: "int64"  
+          format: "int64"
           maximum: 517000
           minimum: 1
         sum_pay:
           type: integer
-          format: "int64"        
+          format: "int64"
         period_month:
           type: integer
-          format: "int64" 
+          format: "int64"
           minimum: 1
         month_sum:
           type: integer
           format: "int64"
         sum_paid:
           type: integer
-          format: "int64"        
+          format: "int64"
         sum_left:
           type: integer
           format: "int64"
@@ -89,7 +89,7 @@ components:
           format: "int64"
           minimum: 30
           maximum: 30
-      required: 
+      required:
         - sum_take
         - period_month
     Budget:
@@ -110,8 +110,8 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
-        
-    
+
+
 paths:
   /clients:
     get:
@@ -120,7 +120,7 @@ paths:
       summary: 'List of clients'
       responses:
         '200':
-          description: 'successful'  
+          description: 'successful'
           content:
             application/json:
               schema:
@@ -132,7 +132,7 @@ paths:
         '404':
           description: 'there are no clients'
       security:
-        - bearer: []   
+        - bearer: []
   /client:
     post:
       tags:
@@ -148,7 +148,7 @@ paths:
           type: string
       - name: password
         in: query
-        description: the user password 
+        description: the user password
         required: true
         schema:
           type: string
@@ -194,7 +194,7 @@ paths:
                credits: []
         '400':
           description: invalid requestBody
-          
+
   /client/login:
     get:
       tags:
@@ -219,11 +219,8 @@ paths:
           content:
             application/json:
               schema:
-                type: array
                 items:
                   $ref: '#/components/schemas/Client'
-                example:
-                  [client_1, client_3]
         '400':
           description: invalid password or username
         '404':
@@ -300,7 +297,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/Client'
                 example:
-                  [client_1, client_3] 
+                  [client_1, client_3]
         '404':
            description: client doesn't exist
       security:
@@ -312,54 +309,17 @@ paths:
       operationId: update_client
       parameters:
       - name: client_id
-        in: path
+        in: body
         required: true
         schema:
-          type: integer
-      - name: username
-        in: query
-        description: the username
-        required: true
-        schema:
-          type: string
-      - name: password
-        in: query
-        description: the user password 
-        required: true
-        schema:
-          type: string
-      - name: first name
-        in: query
-        description: the user first name
-        required: true
-        schema:
-          type: string
-      - name: surname
-        in: query
-        description: the user surname
-        required: true
-        schema:
-          type: string
-      - name: email
-        in: query
-        description: the user's email
-        required: true
-        schema:
-          type: string
-      - name: age
-        in: query
-        description: the user`s age
-        required: true
-        schema:
-          type: integer
-          minimum: 18
+          $ref: '#/components/schemas/Client'
       responses:
         '200':
            description: "Client`s info updated"
            content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Client'           
+                $ref: '#/components/schemas/Client'
               example:
                client_id: 1
                first_name: Victoria
@@ -367,13 +327,13 @@ paths:
                email: victoriahall14@gmail.com
                password: '*****'
                age: 18
-               credits: []           
+               credits: []
         "400":
             description: "Invalid client supplied"
         "404":
             description: "Client not found"
       security:
-        - bearer: []            
+        - bearer: []
   /client/{client_id}/credit:
     get:
       tags:
@@ -411,7 +371,7 @@ paths:
         '404':
           description: "the client doesn`t have a credit"
       security:
-        - bearer: []    
+        - bearer: []
     post:
       tags:
         - credit
@@ -430,7 +390,7 @@ paths:
         required: true
         schema:
           type: integer
-          format: "int64" 
+          format: "int64"
           maximum: 51700
           minimum: 1
       - name: period_month
@@ -453,7 +413,7 @@ paths:
         "404":
           description: 'client doesnt exist'
       security:
-        - bearer: []         
+        - bearer: []
     put:
       tags:
         - credit
@@ -472,11 +432,11 @@ paths:
             content:
               application/json:
                 schema:
-                  $ref: '#/components/schemas/Client'  
+                  $ref: '#/components/schemas/Client'
         "404":
           description: 'client or  doesn`t exist'
       security:
-        - bearer: []          
+        - bearer: []
     delete:
       tags:
        - credit
@@ -495,32 +455,32 @@ paths:
             content:
               application/json:
                 schema:
-                  $ref: '#/components/schemas/Client'            
+                  $ref: '#/components/schemas/Client'
         "400":
           description: 'credit isnt completely paid'
         "404":
           description: 'credit doesn`t exist'
       security:
-        - bearer: []        
+        - bearer: []
   /budget_state:
     get:
       tags:
        - budget
       summary: 'see state of budget'
-      operationId: budget_state_rendering 
+      operationId: budget_state_rendering
       responses:
         "200":
             description: "Budget info showed"
             content:
               application/json:
                 schema:
-                  $ref: '#/components/schemas/Budget'  
+                  $ref: '#/components/schemas/Budget'
                 example:
                   is_empty: false
                   available_sum: 517000
         "404":
             description: "no budget found"
-  /budget_update/{credit_id}:          
+  /budget_update/{credit_id}:
     put:
       tags:
         - budget
@@ -538,29 +498,13 @@ paths:
             content:
               application/json:
                 schema:
-                  $ref: '#/components/schemas/Budget'  
+                  $ref: '#/components/schemas/Budget'
                 example:
                   is_empty: false
                   available_sum: 517000
         "404":
-            description: "no budget or credit found"     
+            description: "no budget or credit found"
         "401":
-            description: "budget is up to date with this credit"   
+            description: "budget is up to date with this credit"
       security:
-        - bearer: []          
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+        - bearer: []

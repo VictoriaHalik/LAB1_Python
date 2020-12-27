@@ -1,0 +1,17 @@
+Register user
+curl -X POST -H "Content-Type: application/json" --data '{"first_name": "TestUser", "surname": "TU","email": "test@gmail.com", "age": "18", "password": "1234","id": "10"}' http://127.0.0.1:5000/clients
+
+Get user`s info
+curl -X GET -H "Authorization: JWT <token>" http://localhost:5000/clients/<client_id>
+
+Login
+curl -X POST -H "Content-Type: application/json" -d '{"email" : "kmpopiv@gmail.com" , "password" : "1234"}' http://localhost:5000/clients/login
+
+Check Credits
+curl -X GET -H "Authorization: JWT <token>" http://localhost:5000/credit/<client_id>
+
+Create credit
+curl -X POST -H "Content-Type: application/json" -d '{ "sum_take": "500", "month_sum": "100", "start_date": "2021-12-24", "finish_date": "2021-12-30","fk_client_id": "3"}' -H "Authorization: JWT <token>" http://localhost:5000/credit/<credit_id>
+
+Pay credit
+curl -X PUT -H "Authorization: JWT <token>" -H "Content-Type: application/json" -d '{"sum_pay": "10"}' http://127.0.0.1:5000/credit/7
