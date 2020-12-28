@@ -14,4 +14,33 @@ Create credit
 curl -X POST -H "Content-Type: application/json" -d '{ "sum_take": "500", "month_sum": "100", "start_date": "2021-12-24", "finish_date": "2021-12-30","fk_client_id": "3"}' -H "Authorization: JWT <token>" http://localhost:5000/credit/<credit_id>
 
 Pay credit
-curl -X PUT -H "Authorization: JWT <token>" -H "Content-Type: application/json" -d '{"sum_pay": "10"}' http://127.0.0.1:5000/credit/7
+curl -X PUT -H "Authorization: JWT <token>" -H "Content-Type: application/json" -d '{"sum_pay": "10"}' http://127.0.0.1:500s0/credit/7
+
+
+Register
+{
+    "first_name": "TestUser", 
+    "surname": "TU",
+    "email": "test@gmail.com", 
+    "age": "18", 
+    "password": "1234",
+    "id": "10"
+}
+
+Create Credit
+{ 
+    "sum_take": "500", 
+    "month_sum": "100", 
+    "start_date": "2021-12-24", 
+    "finish_date": "2021-12-30",
+    "fk_client_id": "3"
+}
+
+Edit client 
+{
+    "first_name": "TestUser", 
+    "surname": "TU", 
+    "email": "test@gmail.com", 
+    "age": "10"
+}
+

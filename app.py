@@ -6,8 +6,7 @@ from LABS_Application_Programming.models import Client, Budget, Credit, session
 import datetime
 from flask_jwt import JWT, jwt_required, current_identity
 
-# curl -X POST http://127.0.0.1:5000/clients -H "Cont
-# ent-Type: application/json" --data "{\"first_name\": \"Alina\", \"surname\": \"Dz\", \"email\": \"kmpopiv@gmail.com\", \"age
+# curl -X POST http://127.0.0.1:5000/clients -H "Content-Type: application/json" --data "{\"first_name\": \"Alina\", \"surname\": \"Dz\", \"email\": \"kmpopiv@gmail.com\", \"age
 # \": \"15\", \"password\": \"1234\",\"client_id\": \"3\"}"
 
 app = Flask(__name__)
@@ -151,7 +150,7 @@ def create_credit(credit_id):
                    'percent': 30,
                    'start_date': data['start_date'],
                    'finish_date': data['finish_date'],
-                   'fk_client_id': data['fk_client_id']
+                   'fk_client_id': current_identity.id,
                    }
     found_cl = session.query(Client) \
         .filter(Client.id == parsed_data['fk_client_id']).one_or_none()
