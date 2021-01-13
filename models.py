@@ -2,13 +2,16 @@ from sqlalchemy import Column, Integer, String, DATE, Boolean, create_engine, Fo
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy.orm.scoping import scoped_session
+from sqlalchemy.pool import StaticPool
 
-engine = create_engine("postgresql+psycopg2://victoriapp:victoriapp@localhost/dbpp")
+# engine = create_engine("postgresql+psycopg2://postgres:ujhjljr2002@localhost:5432/postgres")
+engine = create_engine("sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool)
 
 sessionFactory = sessionmaker(bind=engine)
 session = scoped_session(sessionFactory)
 
 BaseModel = declarative_base()
+
 
 class Client(BaseModel):
     __tablename__ = "clients"

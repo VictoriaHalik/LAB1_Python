@@ -47,3 +47,5 @@ s.add(credit5)
 
 
 s.commit()
+# coverage run -m pytest app.py test.py
+# coverage report app.py models.py shemas.py test.py
