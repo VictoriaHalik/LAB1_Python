@@ -1,5 +1,5 @@
 CREATE TABLE clients(
-    client_id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
     first_name VARCHAR,
     surname VARCHAR,
     email VARCHAR,
@@ -8,7 +8,7 @@ CREATE TABLE clients(
 );
 
 CREATE TABLE credits(
-    credit_id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
     sum_take INTEGER,
     sum_pay INTEGER,
     pay_off BOOLEAN,
@@ -20,7 +20,7 @@ CREATE TABLE credits(
     finish_date DATE,
     percent INTEGER,
     fk_client_id INTEGER,
-    FOREIGN KEY(fk_client_id)  REFERENCES clients(client_id) ON DELETE CASCADE
+    FOREIGN KEY(fk_client_id)  REFERENCES clients(id) ON DELETE CASCADE
 );
 
 CREATE TABLE budget(

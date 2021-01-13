@@ -1,5 +1,5 @@
 from marshmallow import Schema, fields, post_load
-from LABS_Application_Programming.models import *
+from models import *
 
 
 class ClientSchema(Schema):

@@ -1,9 +1,8 @@
 from flask import Flask, request, abort, jsonify
 from flask_bcrypt import Bcrypt
-from LABS_Application_Programming.shemas import ClientSchema, BudgetSchema, CreditSchema
+from shemas import ClientSchema, BudgetSchema, CreditSchema
 from marshmallow import ValidationError
-from LABS_Application_Programming.models import Client, Budget, Credit, session
-import datetime
+from models import Client, Budget, Credit, session
 from flask_jwt import JWT, jwt_required, current_identity
 
 # curl -X POST http://127.0.0.1:5000/clients -H "Content-Type: application/json" --data "{\"first_name\": \"Alina\", \"surname\": \"Dz\", \"email\": \"kmpopiv@gmail.com\", \"age
@@ -39,10 +38,7 @@ jwt = JWT(app, authenticate, identity)
 def find_client(client_id):
     found_client = session.query(Client).filter(Client.id == client_id).one_or_none()
     schema = ClientSchema()
-    try:
-        schema.dump(found_client)
-    except ValidationError as err:
-        return abort(400, 'invalid id')
+    schema.dump(found_client)
     if found_client is None:
         return 'client not found', 404
     if found_client.id != current_identity.id:
@@ -79,7 +75,7 @@ def del_user(client_id):
     if found_client is None:
         return 'invalid id', 400
     if found_client.id != current_identity.id:
-        return 'Access denied', 403
+        return 'Access denied', 401
     session.delete(found_client)
     session.commit()
     return ''
@@ -167,12 +163,11 @@ def create_credit(credit_id):
         session.commit()
         return 'The credit is created'
     else:
-        raise ValidationError(message='There is no cost')
-    # budget = session.query(Budget).filter(Budget.available_sum.isnot(None)).one_or_none()
-    #
-    # budget.available_sum -= credit.sum_take
+        return 'There is no cost', 400
+# curl -X POST -H "Content-Type: application/json" -d '{ "sum_take": "500", "month_sum": "100",
+# "start_date": "2021-12-24", "finish_date": "2021-12-30","fk_client_id": "3"}'
+# -H "Authorization: JWT <token>" http://localhost:5000/credit/<credit_id>
 
-# curl -X POST -H "Content-Type: application/json" -d '{ "sum_take": "500", "month_sum": "100", "start_date": "2021-12-24", "finish_date": "2021-12-30","fk_client_id": "3"}' -H "Authorization: JWT <token>" http://localhost:5000/credit/<credit_id>
 
 @app.route('/credit/<credit_id>', methods=['PUT'])
 @jwt_required()
@@ -205,20 +200,6 @@ def pay_credit(credit_id):
 # curl -X PUT -H "Authorization: JWT <token>" -H "Content-Type: application/json" -d '{"sum_pay": "10"}' http://127.0.0.1:5000/credit/7
 
 
-
-# @app.route('/clients/<credit_id>/credit', methods=['DELETE'])
-# def del_credit(credit_id):
-#     found_credit = session.query(Credit).filter(Credit.credit_id == credit_id).one_or_none()
-#     if found_credit is None:
-#         return 'invalid id', 400
-#     elif found_credit.sum_left <= 0:
-#         session.delete(found_credit)
-#         session.commit()
-#         return 'sucseed'
-#     else:
-#         return 'credit can not be delete'
-
-
 @app.route('/budget')
 def budget_info():
     budget_found = session.query(Budget).filter(Budget.available_sum.isnot(None)).one_or_none()
@@ -230,13 +211,13 @@ def budget_info():
     return budget
 
 
-if __name__ == "__main__":
-    app.run()
-
-# curl -X POST http://127.0.0.1:5000/clients -H "Content-Type: application/json" --data "{\"first_name\": \"Alina\", \"surname\": \"Dz\", \"email\": \"kmpopiv@gmail.com\", \"age\": \"15\", \"password\": \"1234\",\"client_id\": \"4\"}"
+# curl -X POST http://127.0.0.1:5000/clients -H "Content-Type: application/json" --data "{\"first_name\": \"Alina\",
+# \"surname\": \"Dz\", \"email\": \"kmpopiv@gmail.com\", \"age\": \"15\", \"password\": \"1234\",\"client_id\": \"4\"}"
 # curl -X PUT http://127.0.0.1:5000/credit/3 -H "Content-Type: application/json" --data "{\"sum_pay\": \"1000\"}"
 # curl -X DELETE http://127.0.0.1:5000/clients/2/credit
 # curl -X GET http://127.0.0.1:5000/budget
-# curl -X PUT http://127.0.0.1:5000/clients/4 -H "Content-Type: application/json" --data "{\"first_name\": \"Alina\", \"surname\": \"Dz\", \"email\": \"kmpopiv@gmail.com\", \"age\": \"15\"}"
+# curl -X PUT http://127.0.0.1:5000/clients/4 -H "Content-Type: application/json" --data "{\"first_name\": \"Alina\",
+# \"surname\": \"Dz\", \"email\": \"kmpopiv@gmail.com\", \"age\": \"15\"}"
 
-# curl-X POST http://127.0.0.1:5000/credit/5 -H "Content-Type: application/json" --data "{ \"sum_take\": \"500\", \"month_sum\": \"100\", \"start_date\": \"2021-12-24\", \"finish_date\": \"2021-12-30\",\"fk_client_id\": \"4\"}"
+# curl-X POST http://127.0.0.1:5000/credit/5 -H "Content-Type: application/json" --data "{ \"sum_take\": \"500\",
+# \"month_sum\": \"100\", \"start_date\": \"2021-12-24\", \"finish_date\": \"2021-12-30\",\"fk_client_id\": \"4\"}"
